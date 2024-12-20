@@ -1,0 +1,93 @@
+$Validating Account Number: 12345678
+Matches Pattern: true
+Account Exists: false
+$Validating Account Number: 98765432
+Matches Pattern: true
+Account Exists: false
+$Validating Account Number: 23456789
+Matches Pattern: true
+Account Exists: false
+$Validating Account Number: 12345678
+Matches Pattern: true
+Account Exists: false
+$Validating Account Number: 12345678
+Matches Pattern: true
+Account Exists: false
+$Validating Account Number: 12345678
+Matches Pattern: true
+Account Exists: true
+$Validating Account Number: 11223344
+Matches Pattern: true
+Account Exists: false
+$Validating Account Number: 55667788
+Matches Pattern: true
+Account Exists: false
+$Validating Account Number: 99887766
+Matches Pattern: true
+Account Exists: false
+$Validating Account Number: 12341234
+Matches Pattern: true
+Account Exists: false
+$Validating Account Number: 56785678
+Matches Pattern: true
+Account Exists: false
+$Validating Account Number: 56785678
+Matches Pattern: true
+Account Exists: true
+	$Validating Account Number: 87654321
+	Matches Pattern: true
+	Account Exists: false
+	$Validating Account Number: 76543210
+	Matches Pattern: true
+	Account Exists: false
+
+$Validating Account Number: 87654321
+
+Matches Pattern: true
+
+Account Exists: false
+
+$Validating Account Number: 76543210
+
+Matches Pattern: true
+
+Account Exists: false
+
+$Validating Account Number: 99887766
+
+Matches Pattern: true
+
+Account Exists: false
+$Validating Account Number: 12345678
+Matches Pattern: true
+Account Exists: false
+$Validating Account Number: 87654321
+Matches Pattern: true
+Account Exists: false
+$Validating Account Number: 11223344
+Matches Pattern: true
+Account Exists: false
+$Validating Account Number: 12345678
+Matches Pattern: true
+Account Exists: false
+$Validating Account Number: 87654321
+Matches Pattern: true
+Account Exists: false
+$Validating Account Number: 11223344
+Matches Pattern: true
+Account Exists: false
+$Validating Account Number: 99887766
+Matches Pattern: true
+Account Exists: false
+$Validating Account Number: 12345678
+Matches Pattern: true
+Account Exists: false
+$Validating Account Number: 87654321
+Matches Pattern: true
+Account Exists: false
+$Validating Account Number: 11223344
+Matches Pattern: true
+Account Exists: false
+$Validating Account Number: 55667788
+Matches Pattern: true
+Account Exists: false

@@ -1,0 +1,78 @@
+Index: .gitlab-ci.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>include:\n  - template: Code-Quality.gitlab-ci.yml\n\nimage: gradle:6.6.1-jdk11\n\nvariables:\n  GRADLE_OPTS: \"-Dorg.gradle.daemon=false\"\n\nbefore_script:\n  - export GRADLE_USER_HOME=`pwd`/.gradle\n\nbuild:\n  stage: build\n  script:\n    - gradle --build-cache assemble\n    - echo $CI_BUILD_PATH\n    - echo $CI_PROJECT_DIR\n  cache:\n    key: \"$CI_COMMIT_REF_NAME\"\n    policy: push\n    paths:\n      - build\n      - .gradle\n\ncode_quality:\n  stage: test\n  allow_failure: false\n  variables:\n    CODE_QUALITY_IMAGE: \"registry.gitlab.com/gitlab-org/ci-cd/codequality:latest\"\n  artifacts:\n    expose_as: 'Code Quality Report'\n    paths: [ gl-code-quality-report.json ]\n\ntest:\n  stage: test\n  script:\n    - 'gradle test jacocoTestReport'\n  artifacts:\n    when: always\n    expose_as: 'Jacoco Test Report'\n    paths:\n      - builds/jacoco/jacoco.xml\n    reports:\n      junit: build/test-results/test/**/TEST-*.xml\n\ncode_quality_html:\n  extends: code_quality\n  variables:\n    REPORT_FORMAT: html\n  artifacts:\n    expose_as: 'Code Quality Report HTML'\n    paths: [ gl-code-quality-report.html ]\n\ncoverage-jdk11:\n  stage: deploy\n  image: haynes/jacoco2cobertura:1.0.3\n  script:\n    - 'python /opt/cover2cover.py builds/jacoco/jacoco.xml src/main/java > builds/cobertura.xml'\n    - 'python /opt/source2filename.py builds/cobertura.xml'\n  needs: [ \"test\" ]\n  dependencies:\n    - test\n  artifacts:\n    expose_as: 'Coverage Report'\n    paths: [ builds/cobertura.xml ]\n    reports:\n      coverage_report:\n        coverage_format: cobertura\n        path: builds/cobertura.xml
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.gitlab-ci.yml b/.gitlab-ci.yml
+--- a/.gitlab-ci.yml	(revision 414ea5ffdca5ba375cd59fc240a58be6e75e0116)
++++ b/.gitlab-ci.yml	(date 1732944508074)
+@@ -51,6 +51,18 @@
+     expose_as: 'Code Quality Report HTML'
+     paths: [ gl-code-quality-report.html ]
+ 
++
++mutation-coverage:
++  stage: test
++  script:
++    - 'gradle test pitest'
++    - 'tar -czvf build/reports/pitest.tar.gz build/reports/pitest/'
++  artifacts:
++    when: always
++    expose_as: 'Pitest Report'
++    paths:
++      - build/reports/pitest.tar.gz
++
+ coverage-jdk11:
+   stage: deploy
+   image: haynes/jacoco2cobertura:1.0.3
+@@ -66,4 +78,4 @@
+     reports:
+       coverage_report:
+         coverage_format: cobertura
+-        path: builds/cobertura.xml
+\ No newline at end of file
++        path: builds/cobertura.xml
+Index: build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>plugins {\n    id 'java'\n    id 'idea'\n    id 'jacoco'\n}\n\ngroup 'org.example'\nversion '1.0-SNAPSHOT'\n\nrepositories {\n    mavenCentral()\n}\n\ndependencies {\n    testImplementation 'org.junit.jupiter:junit-jupiter:5.4.2'\n}\n\ntest {\n    useJUnitPlatform()\n    testLogging {\n        events \"passed\", \"skipped\", \"failed\"\n    }\n}\n\njacocoTestReport {\n  reports {\n    xml.enabled true\n    xml.destination = project.file(\"builds/jacoco/jacoco.xml\")\n  }\n}\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/build.gradle b/build.gradle
+--- a/build.gradle	(revision 414ea5ffdca5ba375cd59fc240a58be6e75e0116)
++++ b/build.gradle	(date 1732944508075)
+@@ -2,6 +2,7 @@
+     id 'java'
+     id 'idea'
+     id 'jacoco'
++    id 'info.solidsoft.pitest' version '1.5.2'
+ }
+ 
+ group 'org.example'
+@@ -23,9 +24,18 @@
+ }
+ 
+ jacocoTestReport {
+-  reports {
+-    xml.enabled true
+-    xml.destination = project.file("builds/jacoco/jacoco.xml")
+-  }
++    reports {
++        xml.enabled true
++        xml.destination = project.file("builds/jacoco/jacoco.xml")
++    }
+ }
+ 
++pitest {
++    targetClasses = ['banking.*']
++    targetTests = ['banking.*']
++    testSourceSets = [sourceSets.test]
++    mainSourceSets = [sourceSets.main]
++    pitestVersion = '1.5.2'
++    junit5PluginVersion = "0.12"
++    outputFormats = ['XML', 'HTML']
++}
+\ No newline at end of file
